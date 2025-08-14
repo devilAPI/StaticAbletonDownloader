@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ableton Live Direct Download</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: rgba(30, 30, 46, 0.9);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        
+        header {
+            background: rgba(20, 20, 36, 0.95);
+            padding: 25px 30px;
+            text-align: center;
+            border-bottom: 1px solid rgba(107, 177, 255, 0.2);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #6bb1ff, #ff5b5b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 15px rgba(107, 177, 255, 0.3);
+        }
+        
+        .subtitle {
+            color: #a0aec0;
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .download-status {
+            display: flex;
+            justify-content: center;
+            padding: 25px 0;
+            background: rgba(15, 15, 30, 0.8);
+        }
+        
+        .status-card {
+            background: linear-gradient(135deg, #ff5b5b, #6bb1ff);
+            border-radius: 12px;
+            padding: 20px 40px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .status-card i {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .content-area {
+            padding: 30px;
+            min-height: 500px;
+        }
+        
+        .step-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #6bb1ff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .step-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(107, 177, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: #cbd5e0;
+            font-size: 1.1rem;
+        }
+        
+        select, input {
+            width: 100%;
+            padding: 14px 18px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(26, 32, 44, 0.7);
+            color: #fff;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        select:focus, input:focus {
+            outline: none;
+            border-color: #6bb1ff;
+            box-shadow: 0 0 0 3px rgba(107, 177, 255, 0.3);
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #ff5b5b, #6bb1ff);
+            color: white;
+            border: none;
+            padding: 16px 30px;
+            font-size: 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn:active {
+            transform: translateY(1px);
+        }
+        
+        .version-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 12px;
+            margin-top: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 10px;
+            background: rgba(20, 20, 36, 0.5);
+            border-radius: 8px;
+        }
+        
+        .version-item {
+            padding: 10px;
+            background: rgba(30, 30, 46, 0.7);
+            border-radius: 6px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        
+        .version-item:hover {
+            background: rgba(107, 177, 255, 0.2);
+        }
+        
+        .version-item.selected {
+            background: linear-gradient(135deg, #ff5b5b, #6bb1ff);
+            font-weight: bold;
+        }
+        
+        .info-text {
+            background: rgba(20, 20, 36, 0.5);
+            border-left: 4px solid #6bb1ff;
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin: 20px 0;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        
+        .info-text strong {
+            color: #ff5b5b;
+        }
+        
+        .download-link {
+            display: none;
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(20, 20, 36, 0.7);
+            border-radius: 10px;
+            border: 1px solid rgba(107, 177, 255, 0.3);
+        }
+        
+        .download-link a {
+            color: #6bb1ff;
+            font-size: 1.2rem;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(30, 30, 46, 0.5);
+            border-radius: 8px;
+            word-break: break-all;
+        }
+        
+        .download-link a:hover {
+            color: #ff5b5b;
+            text-decoration: underline;
+        }
+        
+        .os-detection {
+            display: inline-block;
+            background: rgba(107, 177, 255, 0.1);
+            border-radius: 4px;
+            padding: 3px 8px;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            border: 1px solid rgba(107, 177, 255, 0.2);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #a0aec0;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .step-title {
+                font-size: 1.5rem;
+            }
+            
+            .version-grid {
+                grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Ableton Live Direct Download</h1>
+            <p class="subtitle">Get the exact version you need with one click</p>
+        </header>
+        
+        <div class="download-status">
+            <div class="status-card">
+                <i class="fas fa-cloud-download-alt"></i>
+                <h2>Ready to Download</h2>
+                <p>Select your preferences below</p>
+            </div>
+        </div>
+        
+        <div class="content-area">
+            <div class="step-title">
+                <div class="step-icon"><i class="fas fa-download"></i></div>
+                Download Ableton Live Installer
+            </div>
+            
+            <p class="info-text">
+                <strong>Note:</strong> This tool provides direct download links for Ableton Live installers, directly from Ableton's servers. 
+                Please select your operating system, preferred edition, and version to download.
+            </p>
+            
+            <div class="form-group">
+                <label for="os-select">Select Operating System: <span class="os-detection" id="os-detection">Detecting your OS...</span></label>
+                <select id="os-select">
+                    <option value="windows">Windows</option>
+                    <option value="mac_intel">macOS (Intel)</option>
+                    <option value="mac_arm">macOS (Apple Silicon)</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="edition-select">Select Edition:</label>
+                <select id="edition-select">
+                    <option value="suite">Suite</option>
+                    <option value="standard">Standard</option>
+                    <option value="intro">Intro</option>
+                    <option value="lite">Lite</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Select Version (sorted by major version):</label>
+                <div class="version-grid" id="version-grid">
+                    <!-- Versions will be populated by JS -->
+                </div>
+            </div>
+            
+            <button class="btn" id="download-btn">
+                Download Now <i class="fas fa-download"></i>
+            </button>
+            
+            <div class="download-link" id="download-link">
+                <p>Your download is ready:</p>
+                <a id="direct-download-link" target="_blank">Download Ableton Live</a>
+                <p class="info-text" style="margin-top: 15px; margin-bottom: 0;">
+                    <i class="fas fa-info-circle"></i> If the download doesn't start automatically, click the link above
+                </p>
+            </div>
+            
+        </div>
+        
+        <footer>
+            <p>Ableton Live Direct Download &copy; 2023 | This is a fan-made interface for educational purposes</p>
+        </footer>
+    </div>
+
+    <script>
+        // List of Ableton Live versions
+        const versions = [
+            "12.2.2", "12.2.1", "12.2", "12.1.11", "12.1.10", "12.1.9", "12.1.8", "12.1.7", "12.1.6", "12.1.5",
+            "12.1.4", "12.1.3", "12.1.2", "12.1.1", "12.1", "12.0.25", "12.0.20", "12.0.12", "12.0.11", "12.0.10",
+            "12.0.9", "12.0.8", "12.0.7", "12.0.6", "12.0.5", "12.0.4", "12.0.3", "12.0.2", "12.0.1", "12.0",
+            "11.3.42", "11.3.35", "11.3.30", "11.3.20", "11.3.13", "11.3.12", "11.3.11", "11.3.10", "11.3.4", "11.3.3",
+            "11.3.2", "11.2.11", "11.2.10", "11.2.7", "11.2.6", "11.2.5", "11.2", "11.1.5", "11.1.1", "11.1",
+            "11.0.12", "11.0.11", "11.0.10", "11.0.6", "11.0.5", "11.0.2", "11.0.1", "11.0", "10.1.30", "10.1.25",
+            "10.1.18", "10.1.17", "10.1.15", "10.1.14", "10.1.13", "10.1.9", "10.1.7", "10.1.6", "10.1.5", "10.1.4",
+            "10.1.3", "10.1.2", "10.1.1", "10.1", "10.0.6", "10.0.5", "10.0.4", "10.0.3", "10.0.2", "10.0.1", "10.0",
+            "9.7.7", "9.7.6", "9.7.5", "9.7.4", "9.7.3", "9.7.2", "9.7.1", "9.7", "9.6.2", "9.6.1", "9.6", "9.5",
+            "9.2.3", "9.2.2", "9.2.1", "9.2", "9.1.10", "9.1.9", "9.1.8", "9.1.7", "9.1.6", "9.1.5", "9.1.4", "9.1.3",
+            "9.1.2", "9.1", "9.0.6", "9.0.5", "9.0.4", "9.0.3", "9.0.2", "9.0.1"
+        ];
+        
+        // Function to compare versions
+        function compareVersions(a, b) {
+            const pa = a.split('.').map(Number);
+            const pb = b.split('.').map(Number);
+            for (let i = 0; i < Math.max(pa.length, pb.length); i++) {
+                const na = pa[i] || 0, nb = pb[i] || 0;
+                if (na > nb) return 1;
+                if (na < nb) return -1;
+            }
+            return 0;
+        }
+        
+        // Sort versions by major version (descending) then by minor/patch
+        versions.sort((a, b) => {
+            const aParts = a.split('.').map(Number);
+            const bParts = b.split('.').map(Number);
+            
+            // Compare major versions
+            if (aParts[0] !== bParts[0]) {
+                return bParts[0] - aParts[0];
+            }
+            
+            // Compare minor versions
+            if (aParts[1] !== bParts[1]) {
+                return (bParts[1] || 0) - (aParts[1] || 0);
+            }
+            
+            // Compare patch versions
+            return (bParts[2] || 0) - (aParts[2] || 0);
+        });
+        
+        // Auto-detect OS function
+        function detectOS() {
+            const userAgent = navigator.userAgent;
+            const osDetection = document.getElementById('os-detection');
+            let osValue = 'windows';
+            let osName = 'Windows';
+            
+            // Detect operating system
+            if (userAgent.includes('Macintosh')) {
+                // Check for Apple Silicon
+                if (userAgent.includes('Apple') && userAgent.includes('Mac OS X 11_') || 
+                    navigator.platform.includes('MacARM64') ||
+                    navigator.userAgent.includes('M1') ||
+                    navigator.userAgent.includes('M2') ||
+                    navigator.userAgent.includes('M3')) {
+                    osValue = 'mac_arm';
+                    osName = 'macOS (Apple Silicon)';
+                } else {
+                    osValue = 'mac_intel';
+                    osName = 'macOS (Intel)';
+                }
+            } else if (userAgent.includes('Win')) {
+                osValue = 'windows';
+                osName = 'Windows';
+            } else {
+                // Linux and other OS default to Windows
+                osValue = 'windows';
+                osName = 'Windows (Linux default)';
+            }
+            
+            // Update UI
+            document.getElementById('os-select').value = osValue;
+            osDetection.textContent = `Detected: ${osName}`;
+            osDetection.style.color = '#6bb1ff';
+            
+            return osValue;
+        }
+        
+        // Populate the version grid
+        const versionGrid = document.getElementById('version-grid');
+        let currentMajor = -1;
+        
+        versions.forEach(version => {
+            const versionItem = document.createElement('div');
+            versionItem.className = 'version-item';
+            versionItem.textContent = version;
+            versionItem.dataset.version = version; // Store version in data attribute
+            
+            versionItem.addEventListener('click', () => {
+                // Remove selected class from all items
+                document.querySelectorAll('.version-item').forEach(item => {
+                    item.classList.remove('selected');
+                });
+                // Add selected class to clicked item
+                versionItem.classList.add('selected');
+            });
+            versionGrid.appendChild(versionItem);
+        });
+        
+        // Download button event listener
+        document.getElementById('download-btn').addEventListener('click', function() {
+            const os = document.getElementById('os-select').value;
+            const edition = document.getElementById('edition-select').value;
+            const selectedVersion = document.querySelector('.version-item.selected');
+            
+            if (!selectedVersion) {
+                alert("Please select a version");
+                return;
+            }
+            
+            // Use data attribute for reliability
+            const version = selectedVersion.dataset.version;
+            let url = "https://cdn-downloads.ableton.com/channels/";
+            
+            url += `${version}/ableton_live_${edition}_${version}`;
+            
+            if (os.startsWith("mac")) {
+                if (compareVersions(version, "11.0.12") > 0) {
+                    url += os === "mac_intel" ? "_intel.dmg" : "_universal.dmg";
+                } else {
+                    url += "_64.dmg";
+                }
+            } else {
+                url += "_64.zip";
+            }
+            
+            // Show the download link
+            const downloadLink = document.getElementById('download-link');
+            const directLink = document.getElementById('direct-download-link');
+            directLink.href = url;
+            directLink.textContent = `Download Ableton Live ${edition.charAt(0).toUpperCase() + edition.slice(1)} ${version}`;
+            downloadLink.style.display = 'block';
+            
+            // Scroll to the download link
+            downloadLink.scrollIntoView({ behavior: 'smooth' });
+        });
+        
+        // Auto-select the first version
+        document.querySelector('.version-item').classList.add('selected');
+        
+        // Detect OS on page load
+        detectOS();
+    </script>
+</body>
+</html>
