@@ -263,7 +263,7 @@
             text-decoration: none;
             font-weight: 500;
             padding: 8px 16px;
-            border-radius: 6px;
+            border-radius: 10px;
             background: rgba(107, 177, 255, 0.1);
             transition: all 0.3s ease;
             border: 1px solid rgba(107, 177, 255, 0.2);
@@ -294,18 +294,24 @@
         }
         
         .custom-version-btn {
-            background: rgba(107, 177, 255, 0.2);
-            color: white;
-            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #6bb1ff;
+            text-decoration: none;
+            font-weight: 500;
             padding: 14px 20px;
             border-radius: 10px;
-            cursor: pointer;
+            background: rgba(107, 177, 255, 0.1);
             transition: all 0.3s ease;
-            border: 1px solid rgba(107, 177, 255, 0.3);
+            border: 1px solid rgba(107, 177, 255, 0.2);
         }
         
         .custom-version-btn:hover {
-            background: rgba(107, 177, 255, 0.3);
+            background: rgba(107, 177, 255, 0.2);
+            color: #ff5b5b;
+            transform: translateY(-2px);
+            cursor: pointer;
         }
         
         @media (max-width: 768px) {
