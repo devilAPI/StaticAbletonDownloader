@@ -249,6 +249,62 @@
             color: #a0aec0;
             font-size: 0.9rem;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .github-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #6bb1ff;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 6px;
+            background: rgba(107, 177, 255, 0.1);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(107, 177, 255, 0.2);
+        }
+        
+        .github-link:hover {
+            background: rgba(107, 177, 255, 0.2);
+            color: #ff5b5b;
+            transform: translateY(-2px);
+        }
+        
+        .custom-version-section {
+            background: rgba(20, 20, 36, 0.5);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            margin-top: 20px;
+        }
+        
+        .custom-version-input {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .custom-version-input input {
+            flex: 1;
+        }
+        
+        .custom-version-btn {
+            background: rgba(107, 177, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(107, 177, 255, 0.3);
+        }
+        
+        .custom-version-btn:hover {
+            background: rgba(107, 177, 255, 0.3);
         }
         
         @media (max-width: 768px) {
@@ -262,6 +318,14 @@
             
             .version-grid {
                 grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+            }
+            
+            .custom-version-input {
+                flex-direction: column;
+            }
+            
+            .custom-version-btn {
+                width: 100%;
             }
         }
     </style>
@@ -309,6 +373,24 @@
                 <div class="version-sections" id="version-sections">
                     <!-- Version sections will be populated by JS -->
                 </div>
+                
+                <!-- Custom Version Section -->
+                <div class="custom-version-section">
+                    <div class="section-header">
+                        Custom Version
+                    </div>
+                    <div class="section-content">
+                        <div class="custom-version-input">
+                            <input type="text" id="custom-version-input" placeholder="Enter version (e.g., 12.3.1)">
+                            <button class="custom-version-btn" id="custom-version-btn">
+                                Use Custom Version
+                            </button>
+                        </div>
+                        <p style="margin-top: 10px; font-size: 0.9rem; color: #a0aec0;">
+                            Enter a version not listed above. Format: Major.Minor.Patch (e.g., 12.3.1)
+                        </p>
+                    </div>
+                </div>
             </div>
             
             <button class="btn" id="download-btn">
@@ -326,7 +408,10 @@
         </div>
         
         <footer>
-            <a href="https://github.com/devilAPI/StaticAbletonDownloader/">GitHub</a>
+            <a href="https://github.com/devilAPI/StaticAbletonDownloader/" class="github-link">
+                <i class="fab fa-github"></i> View on GitHub
+            </a>
+            <p>StaticAbletonDownloader &copy; 2023</p>
         </footer>
     </div>
 
@@ -464,6 +549,9 @@
                     });
                     // Add selected class to clicked item
                     versionItem.classList.add('selected');
+                    
+                    // Clear custom version input
+                    document.getElementById('custom-version-input').value = '';
                 });
                 
                 grid.appendChild(versionItem);
@@ -475,19 +563,52 @@
             versionSections.appendChild(section);
         });
         
+        // Custom version button event listener
+        document.getElementById('custom-version-btn').addEventListener('click', function() {
+            const customVersion = document.getElementById('custom-version-input').value.trim();
+            
+            if (!customVersion) {
+                alert("Please enter a version number");
+                return;
+            }
+            
+            // Validate version format (basic check)
+            const versionPattern = /^\d+(\.\d+){0,2}$/;
+            if (!versionPattern.test(customVersion)) {
+                alert("Please enter a valid version number (e.g., 12.3.1)");
+                return;
+            }
+            
+            // Remove selected class from all version items
+            document.querySelectorAll('.version-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            // Show custom version as selected
+            document.getElementById('custom-version-input').style.borderColor = '#6bb1ff';
+            document.getElementById('custom-version-input').style.boxShadow = '0 0 0 3px rgba(107, 177, 255, 0.3)';
+        });
+        
         // Download button event listener
         document.getElementById('download-btn').addEventListener('click', function() {
             const os = document.getElementById('os-select').value;
             const edition = document.getElementById('edition-select').value;
-            const selectedVersion = document.querySelector('.version-item.selected');
             
-            if (!selectedVersion) {
-                alert("Please select a version");
+            // Check if a version is selected or custom version is entered
+            const selectedVersion = document.querySelector('.version-item.selected');
+            const customVersion = document.getElementById('custom-version-input').value.trim();
+            
+            let version;
+            
+            if (selectedVersion) {
+                version = selectedVersion.dataset.version;
+            } else if (customVersion) {
+                version = customVersion;
+            } else {
+                alert("Please select a version or enter a custom version");
                 return;
             }
             
-            // Use data attribute for reliability
-            const version = selectedVersion.dataset.version;
             let url = "https://cdn-downloads.ableton.com/channels/";
             
             url += `${version}/ableton_live_${edition}_${version}`;
