@@ -1,650 +1,824 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <title>StaticAbletonDownloader</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Inline SVG icon helper */
+        .icon { display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; }
+        .icon svg { display:block; }
+    </style>
     <link rel="icon" href="https://cdn-resources.ableton.com/80bA26cPQ1hEJDFjpUKntxfqdmG3ZykO/static/images/favicon.ico" type="image/vnd.icon">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        :root {
+            --bg: #0a0a0f;
+            --surface: #111118;
+            --surface2: #18181f;
+            --border: rgba(255,255,255,0.07);
+            --accent: #ff4d6d;
+            --accent2: #4daaff;
+            --text: #e8e8f0;
+            --muted: #6b6b80;
+            --selected: #ff4d6d;
+            --mono: 'Space Mono', monospace;
+            --sans: 'DM Sans', sans-serif;
         }
-        
-        body {
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
-            color: #fff;
-            min-height: 100vh;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            overflow-x: hidden;
-        }
-        
-        .container {
-            max-width: 900px;
-            width: 100%;
-            background: rgba(30, 30, 46, 0.9);
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-            overflow: hidden;
-            margin-top: 20px;
-        }
-        
-        header {
-            background: rgba(20, 20, 36, 0.95);
-            padding: 25px 30px;
-            text-align: center;
-            border-bottom: 1px solid rgba(107, 177, 255, 0.2);
-        }
-        
-        h1 {
-            font-size: 2.8rem;
-            margin-bottom: 10px;
-            background: linear-gradient(90deg, #6bb1ff, #ff5b5b);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-shadow: 0 0 15px rgba(107, 177, 255, 0.3);
-        }
-        
-        .subtitle {
-            color: #a0aec0;
-            font-size: 1.2rem;
-            max-width: 700px;
-            margin: 0 auto;
-        }
-        
-        .content-area {
-            padding: 30px;
-            min-height: 500px;
-        }
-        
-        .step-title {
-            font-size: 1.8rem;
-            margin-bottom: 20px;
-            color: #6bb1ff;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .step-icon {
-            width: 50px;
-            height: 50px;
-            background: rgba(107, 177, 255, 0.1);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-        }
-        
-        .form-group {
-            margin-bottom: 25px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: 500;
-            color: #cbd5e0;
-            font-size: 1.1rem;
-        }
-        
-        select, input {
-            width: 100%;
-            padding: 14px 18px;
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(26, 32, 44, 0.7);
-            color: #fff;
-            font-size: 16px;
-            transition: all 0.3s ease;
-        }
-        
-        select:focus, input:focus {
-            outline: none;
-            border-color: #6bb1ff;
-            box-shadow: 0 0 0 3px rgba(107, 177, 255, 0.3);
-        }
-        
-        .btn {
-            background: linear-gradient(135deg, #6bb1ff, #ff5b5b);
-            color: white;
-            border: none;
-            padding: 16px 30px;
-            font-size: 18px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            transition: all 0.3s ease;
-            margin-top: 10px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            width: 100%;
-        }
-        
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-        }
-        
-        .btn:active {
-            transform: translateY(1px);
-        }
-        
-        .version-sections {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        
-        .version-section {
-            background: rgba(20, 20, 36, 0.5);
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-        
-        .section-header {
-            background: linear-gradient(90deg, #6bb1ff, #ff5b5b);
-            padding: 12px 20px;
-            font-size: 1.3rem;
-            font-weight: 600;
-        }
-        
-        .section-content {
-            padding: 15px;
-        }
-        
-        .version-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-            gap: 10px;
-        }
-        
-        .version-item {
-            padding: 10px;
-            background: rgba(30, 30, 46, 0.7);
-            border-radius: 6px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            position: relative;
-        }
-        
-        .version-item:hover {
-            background: rgba(107, 177, 255, 0.2);
-        }
-        
-        .version-item.selected {
-            background: linear-gradient(135deg, #ff5b5b, #6bb1ff);
-            font-weight: bold;
-        }
-        
-        .info-text {
-            background: rgba(20, 20, 36, 0.5);
-            border-left: 4px solid #6bb1ff;
-            padding: 15px;
-            border-radius: 0 8px 8px 0;
-            margin: 20px 0;
-            font-size: 0.95rem;
-            line-height: 1.6;
-        }
-        
-        .info-text strong {
-            color: #ff5b5b;
-        }
-        
-        .download-link {
-            display: none;
-            text-align: center;
-            margin-top: 30px;
-            padding: 20px;
-            background: rgba(20, 20, 36, 0.7);
-            border-radius: 10px;
-            border: 1px solid rgba(107, 177, 255, 0.3);
-        }
-        
-        .download-link a {
-            color: #6bb1ff;
-            font-size: 1.2rem;
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            display: block;
-            margin: 10px 0;
-            padding: 10px;
-            background: rgba(30, 30, 46, 0.5);
-            border-radius: 8px;
-            word-break: break-all;
-        }
-        
-        .download-link a:hover {
-            color: #ff5b5b;
-            text-decoration: underline;
-        }
-        
-        .os-detection {
-            display: inline-block;
-            background: rgba(107, 177, 255, 0.1);
-            border-radius: 4px;
-            padding: 3px 8px;
-            font-size: 0.85rem;
-            margin-top: 5px;
-            border: 1px solid rgba(107, 177, 255, 0.2);
-        }
-        
-        footer {
-            text-align: center;
-            padding: 20px;
-            color: #a0aec0;
-            font-size: 0.9rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        
-        .github-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            color: #6bb1ff;
-            text-decoration: none;
-            font-weight: 500;
-            padding: 8px 16px;
-            border-radius: 10px;
-            background: rgba(107, 177, 255, 0.1);
-            transition: all 0.3s ease;
-            border: 1px solid rgba(107, 177, 255, 0.2);
-        }
-        
-        .github-link:hover {
-            background: rgba(107, 177, 255, 0.2);
-            color: #ff5b5b;
-            transform: translateY(-2px);
-        }
-        
-        .custom-version-section {
-            background: rgba(20, 20, 36, 0.5);
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            margin-top: 20px;
-        }
-        
-        .custom-version-input {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .custom-version-input input {
-            flex: 1;
-        }
-        
-        .custom-version-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            color: #6bb1ff;
-            text-decoration: none;
-            font-weight: 500;
-            padding: 14px 20px;
-            border-radius: 10px;
-            background: rgba(107, 177, 255, 0.1);
-            transition: all 0.3s ease;
-            border: 1px solid rgba(107, 177, 255, 0.2);
-        }
-        
-        .custom-version-btn:hover {
-            background: rgba(107, 177, 255, 0.2);
-            color: #ff5b5b;
-            transform: translateY(-2px);
-            cursor: pointer;
-        }
-        
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2.2rem;
-            }
-            
-            .step-title {
-                font-size: 1.5rem;
-            }
-            
-            .version-grid {
-                grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-            }
-            
-            .custom-version-input {
-                flex-direction: column;
-            }
-            
-            .custom-version-btn {
-                width: 100%;
-            }
-        }
-    </style>
+
+```
+    *, *::before, *::after {
+        margin: 0; padding: 0; box-sizing: border-box;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--sans);
+        min-height: 100vh;
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    /* Subtle animated grid background */
+    body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background-image:
+            linear-gradient(rgba(77,170,255,0.025) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(77,170,255,0.025) 1px, transparent 1px);
+        background-size: 40px 40px;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    body::after {
+        content: '';
+        position: fixed;
+        top: -40%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 700px;
+        height: 700px;
+        background: radial-gradient(circle, rgba(255,77,109,0.08) 0%, transparent 60%);
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    /* ── LAYOUT ── */
+    .page {
+        position: relative;
+        z-index: 1;
+        max-width: 860px;
+        margin: 0 auto;
+        padding: clamp(16px, 4vw, 40px);
+        padding-bottom: 60px;
+    }
+
+    /* ── HEADER ── */
+    header {
+        text-align: center;
+        padding: clamp(32px, 8vw, 72px) 0 clamp(24px, 5vw, 48px);
+        animation: fadeDown 0.6s ease both;
+    }
+
+    .logo-mark {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-family: var(--mono);
+        font-size: clamp(0.65rem, 2vw, 0.75rem);
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--muted);
+        border: 1px solid var(--border);
+        padding: 7px 16px;
+        border-radius: 999px;
+        margin-bottom: 24px;
+    }
+
+    .logo-mark span { color: var(--accent); }
+
+    h1 {
+        font-family: var(--mono);
+        font-size: clamp(1.8rem, 6.5vw, 3.8rem);
+        font-weight: 700;
+        line-height: 1.1;
+        letter-spacing: -0.03em;
+        margin-bottom: 14px;
+    }
+
+    h1 em {
+        font-style: normal;
+        color: var(--accent);
+    }
+
+    .subtitle {
+        font-size: clamp(0.85rem, 2.5vw, 1.05rem);
+        color: var(--muted);
+        font-weight: 300;
+        max-width: 480px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
+
+    /* ── CARD ── */
+    .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: clamp(20px, 5vw, 36px);
+        margin-bottom: 20px;
+        animation: fadeUp 0.5s ease both;
+    }
+
+    .card:nth-child(2) { animation-delay: 0.1s; }
+    .card:nth-child(3) { animation-delay: 0.2s; }
+    .card:nth-child(4) { animation-delay: 0.3s; }
+
+    .card-label {
+        font-family: var(--mono);
+        font-size: 0.65rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .card-label::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+    }
+
+    /* ── PILL SELECTORS (OS / Edition) ── */
+    .pill-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .pill {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        padding: 9px 16px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--surface2);
+        color: var(--muted);
+        font-family: var(--sans);
+        font-size: clamp(0.78rem, 2vw, 0.88rem);
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.18s ease;
+        white-space: nowrap;
+        user-select: none;
+        flex: 1 1 auto;
+        justify-content: center;
+    }
+
+    .pill:hover {
+        border-color: rgba(77,170,255,0.3);
+        color: var(--text);
+    }
+
+    .pill.active {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+    }
+
+    .pill i { font-size: 0.8em; opacity: 0.8; }
+
+    /* OS detection badge */
+    .detect-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.72rem;
+        color: var(--accent2);
+        font-family: var(--mono);
+        margin-top: 10px;
+    }
+
+    .detect-badge::before {
+        content: '';
+        width: 6px; height: 6px;
+        border-radius: 50%;
+        background: var(--accent2);
+        animation: pulse 2s infinite;
+    }
+
+    /* ── VERSION GRID ── */
+    .major-block { margin-bottom: 18px; }
+
+    .major-title {
+        font-family: var(--mono);
+        font-size: 0.72rem;
+        letter-spacing: 0.12em;
+        color: var(--muted);
+        margin-bottom: 10px;
+        text-transform: uppercase;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .major-title::before {
+        content: attr(data-v);
+        font-size: 0.65rem;
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        padding: 2px 7px;
+        border-radius: 4px;
+        color: var(--accent2);
+    }
+
+    .version-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        gap: 6px;
+    }
+
+    @media (max-width: 400px) {
+        .version-grid { grid-template-columns: repeat(auto-fill, minmax(68px, 1fr)); }
+    }
+
+    .version-chip {
+        font-family: var(--mono);
+        font-size: clamp(0.62rem, 1.8vw, 0.72rem);
+        padding: 8px 6px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: var(--surface2);
+        color: var(--muted);
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        user-select: none;
+    }
+
+    .version-chip:hover {
+        border-color: rgba(255,77,109,0.35);
+        color: var(--text);
+        transform: translateY(-1px);
+    }
+
+    .version-chip.selected {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+        font-weight: 700;
+        box-shadow: 0 4px 16px rgba(255,77,109,0.3);
+    }
+
+    /* ── CUSTOM VERSION ── */
+    .custom-row {
+        display: flex;
+        gap: 10px;
+        align-items: stretch;
+    }
+
+    .custom-input {
+        flex: 1;
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        color: var(--text);
+        font-family: var(--mono);
+        font-size: 0.9rem;
+        padding: 12px 16px;
+        transition: border-color 0.2s;
+        min-width: 0;
+    }
+
+    .custom-input::placeholder { color: var(--muted); font-size: 0.82rem; }
+
+    .custom-input:focus {
+        outline: none;
+        border-color: var(--accent2);
+        box-shadow: 0 0 0 3px rgba(77,170,255,0.15);
+    }
+
+    .custom-input.confirmed {
+        border-color: var(--accent2);
+        box-shadow: 0 0 0 3px rgba(77,170,255,0.15);
+    }
+
+    .use-btn {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        color: var(--accent2);
+        font-family: var(--mono);
+        font-size: 0.75rem;
+        padding: 0 16px;
+        cursor: pointer;
+        transition: all 0.18s ease;
+        white-space: nowrap;
+        letter-spacing: 0.05em;
+    }
+
+    .use-btn:hover {
+        background: rgba(77,170,255,0.1);
+        border-color: rgba(77,170,255,0.3);
+    }
+
+    .custom-hint {
+        font-size: 0.75rem;
+        color: var(--muted);
+        margin-top: 9px;
+    }
+
+    /* ── DOWNLOAD BUTTON ── */
+    .download-btn {
+        width: 100%;
+        padding: clamp(14px, 3vw, 18px) 24px;
+        font-family: var(--mono);
+        font-size: clamp(0.85rem, 2.5vw, 1rem);
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        transition: all 0.2s ease;
+        box-shadow: 0 8px 32px rgba(255,77,109,0.25);
+        position: relative;
+        overflow: hidden;
+        margin-top: 8px;
+    }
+
+    .download-btn::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%);
+    }
+
+    .download-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 14px 40px rgba(255,77,109,0.4);
+    }
+
+    .download-btn:active { transform: translateY(1px); }
+
+    .download-btn i { font-size: 1em; }
+
+    /* ── RESULT BOX ── */
+    .result-box {
+        display: none;
+        background: var(--surface);
+        border: 1px solid rgba(77,170,255,0.2);
+        border-radius: 14px;
+        padding: clamp(18px, 4vw, 28px);
+        margin-top: 20px;
+        animation: fadeUp 0.35s ease both;
+    }
+
+    .result-box.visible { display: block; }
+
+    .result-label {
+        font-family: var(--mono);
+        font-size: 0.65rem;
+        letter-spacing: 0.18em;
+        color: var(--muted);
+        text-transform: uppercase;
+        margin-bottom: 14px;
+    }
+
+    .result-link-wrap {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 14px 18px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .result-link-wrap i {
+        color: var(--accent2);
+        font-size: 1.1rem;
+        flex-shrink: 0;
+    }
+
+    .result-link {
+        color: var(--accent2);
+        font-family: var(--mono);
+        font-size: clamp(0.65rem, 2vw, 0.8rem);
+        text-decoration: none;
+        flex: 1;
+        word-break: break-all;
+        line-height: 1.5;
+        transition: color 0.2s;
+    }
+
+    .result-link:hover { color: var(--accent); }
+
+    .result-name {
+        font-size: clamp(0.82rem, 2.3vw, 0.95rem);
+        color: var(--text);
+        font-weight: 500;
+        margin-bottom: 10px;
+    }
+
+    .result-note {
+        font-size: 0.75rem;
+        color: var(--muted);
+        margin-top: 12px;
+        display: flex;
+        align-items: flex-start;
+        gap: 7px;
+    }
+
+    .result-note i { color: var(--accent2); margin-top: 2px; flex-shrink: 0; }
+
+    /* ── DISCLAIMER ── */
+    .disclaimer {
+        background: var(--surface2);
+        border-left: 3px solid var(--accent2);
+        border-radius: 0 10px 10px 0;
+        padding: 14px 18px;
+        font-size: clamp(0.75rem, 2vw, 0.82rem);
+        color: var(--muted);
+        line-height: 1.65;
+    }
+
+    .disclaimer strong { color: var(--accent2); }
+
+    /* ── FOOTER ── */
+    footer {
+        text-align: center;
+        padding-top: 32px;
+        color: var(--muted);
+        font-size: 0.78rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .gh-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--muted);
+        text-decoration: none;
+        border: 1px solid var(--border);
+        padding: 8px 18px;
+        border-radius: 999px;
+        font-size: 0.8rem;
+        transition: all 0.2s;
+    }
+
+    .gh-link:hover {
+        color: var(--text);
+        border-color: rgba(255,255,255,0.15);
+        background: var(--surface2);
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeDown {
+        from { opacity: 0; transform: translateY(-20px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(16px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.3; }
+    }
+
+    /* ── SCROLL for version list ── */
+    .version-scroll-area {
+        max-height: 320px;
+        overflow-y: auto;
+        padding-right: 4px;
+        scrollbar-width: thin;
+        scrollbar-color: var(--surface2) transparent;
+    }
+
+    .version-scroll-area::-webkit-scrollbar { width: 5px; }
+    .version-scroll-area::-webkit-scrollbar-track { background: transparent; }
+    .version-scroll-area::-webkit-scrollbar-thumb {
+        background: var(--surface2);
+        border-radius: 99px;
+    }
+</style>
+```
+
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>StaticAbletonDownloader</h1>
-            <p class="subtitle">Get the exact version you need with one click - all in one file!</p>
-        </header>
-        
-        <div class="content-area">
-            <div class="step-title">
-                <div class="step-icon"><i class="fas fa-download"></i></div>
-                Download Ableton Live Installer
-            </div>
-            
-            <p class="info-text">
-                <strong>Disclaimer:</strong> This tool provides direct download links for Ableton Live installers, directly from Ableton's servers. <br>
-                It does not download a activated version. This is not piracy.
-            </p>
-            
-            <div class="form-group">
-                <label for="os-select">Select Operating System: <span class="os-detection" id="os-detection">Detecting your OS...</span></label>
-                <select id="os-select">
-                    <option value="windows">Windows</option>
-                    <option value="mac_intel">macOS (Intel)</option>
-                    <option value="mac_arm">macOS (Apple Silicon)</option>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label for="edition-select">Select Edition:</label>
-                <select id="edition-select">
-                    <option value="suite">Suite</option>
-                    <option value="standard">Standard</option>
-                    <option value="intro">Intro</option>
-                    <option value="lite">Lite</option>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label>Select Version:</label>
-                <div class="version-sections" id="version-sections">
-                    <!-- Version sections will be populated by JS -->
-                </div>
-                
-                <!-- Custom Version Section -->
-                <div class="custom-version-section">
-                    <div class="section-header">
-                        Custom Version
-                    </div>
-                    <div class="section-content">
-                        <div class="custom-version-input">
-                            <input type="text" id="custom-version-input" placeholder="Enter version (e.g., 12.3.1)">
-                            <button class="custom-version-btn" id="custom-version-btn">
-                                Use Custom Version
-                            </button>
-                        </div>
-                        <p style="margin-top: 10px; font-size: 0.9rem; color: #a0aec0;">
-                            Enter a version not listed above. Format: Major.Minor.Patch (e.g., 12.3.1)
-                        </p>
-                    </div>
-                </div>
-            </div>
-            
-            <button class="btn" id="download-btn">
-                Download Now <i class="fas fa-download"></i>
-            </button>
-            
-            <div class="download-link" id="download-link">
-                <p>Your download is ready:</p>
-                <a id="direct-download-link" target="_blank">Download Ableton Live</a>
-                <p class="info-text" style="margin-top: 15px; margin-bottom: 0;">
-                    <i class="fas fa-info-circle"></i> If the download doesn't start automatically, click the link above
-                </p>
-            </div>
-            
-        </div>
-        
-        <footer>
-            <a href="https://github.com/devilAPI/StaticAbletonDownloader/" class="github-link">
-                <i class="fab fa-github"></i> View on GitHub
-            </a>
-            <p>devilAPI &copy; 2025</p>
-        </footer>
+<div class="page">
+
+```
+<!-- HEADER -->
+<header>
+    <div class="logo-mark"><i class="fas fa-wave-square"></i> Ableton · Installer Tool · <span>v2</span></div>
+    <h1>Static<em>Ableton</em><br>Downloader</h1>
+    <p class="subtitle">Direct installer links from Ableton's servers — any version, one click.</p>
+</header>
+
+<!-- DISCLAIMER -->
+<div class="card" style="animation-delay:0s">
+    <div class="card-label"><i class="fas fa-circle-info"></i> Notice</div>
+    <p class="disclaimer">
+        <strong>Not piracy.</strong> This tool constructs direct download links for official Ableton Live installers served from Ableton's own CDN. No activation is included — a valid license is still required.
+    </p>
+</div>
+
+<!-- OS SELECTION -->
+<div class="card" style="animation-delay:0.08s">
+    <div class="card-label"><i class="fas fa-desktop"></i> Operating System</div>
+    <div class="pill-group" id="os-group">
+        <button class="pill active" data-os="windows"><i class="fab fa-windows"></i> Windows</button>
+        <button class="pill" data-os="mac_intel"><i class="fab fa-apple"></i> macOS Intel</button>
+        <button class="pill" data-os="mac_arm"><i class="fab fa-apple"></i> macOS Apple Silicon</button>
+    </div>
+    <div class="detect-badge" id="detect-badge">Detecting your OS…</div>
+</div>
+
+<!-- EDITION SELECTION -->
+<div class="card" style="animation-delay:0.16s">
+    <div class="card-label"><i class="fas fa-layer-group"></i> Edition</div>
+    <div class="pill-group" id="edition-group">
+        <button class="pill active" data-edition="suite">Suite</button>
+        <button class="pill" data-edition="standard">Standard</button>
+        <button class="pill" data-edition="intro">Intro</button>
+        <button class="pill" data-edition="lite">Lite</button>
+    </div>
+</div>
+
+<!-- VERSION SELECTION -->
+<div class="card" style="animation-delay:0.24s">
+    <div class="card-label"><i class="fas fa-tag"></i> Version</div>
+
+    <div class="version-scroll-area" id="version-scroll">
+        <!-- injected by JS -->
     </div>
 
-    <script>
-        // List of Ableton Live versions
-        const versions = [
-            "12.3.5", "12.3.2", "12.3.1", "12.3", "12.2.7", "12.2.6", "12.2.5", "12.2.2", "12.2.1", "12.2", "12.1.11", "12.1.10", "12.1.9", "12.1.8", "12.1.7", "12.1.6", "12.1.5",
-            "12.1.4", "12.1.3", "12.1.2", "12.1.1", "12.1", "12.0.25", "12.0.20", "12.0.12", "12.0.11", "12.0.10",
-            "12.0.9", "12.0.8", "12.0.7", "12.0.6", "12.0.5", "12.0.4", "12.0.3", "12.0.2", "12.0.1", "12.0",
-            "11.3.42", "11.3.35", "11.3.30", "11.3.20", "11.3.13", "11.3.12", "11.3.11", "11.3.10", "11.3.4", "11.3.3",
-            "11.3.2", "11.2.11", "11.2.10", "11.2.7", "11.2.6", "11.2.5", "11.2", "11.1.5", "11.1.1", "11.1",
-            "11.0.12", "11.0.11", "11.0.10", "11.0.6", "11.0.5", "11.0.2", "11.0.1", "11.0", "10.1.30", "10.1.25",
-            "10.1.18", "10.1.17", "10.1.15", "10.1.14", "10.1.13", "10.1.9", "10.1.7", "10.1.6", "10.1.5", "10.1.4",
-            "10.1.3", "10.1.2", "10.1.1", "10.1", "10.0.6", "10.0.5", "10.0.4", "10.0.3", "10.0.2", "10.0.1", "10.0",
-            "9.7.7", "9.7.6", "9.7.5", "9.7.4", "9.7.3", "9.7.2", "9.7.1", "9.7", "9.6.2", "9.6.1", "9.6", "9.5",
-            "9.2.3", "9.2.2", "9.2.1", "9.2", "9.1.10", "9.1.9", "9.1.8", "9.1.7", "9.1.6", "9.1.5", "9.1.4", "9.1.3",
-            "9.1.2", "9.1", "9.0.6", "9.0.5", "9.0.4", "9.0.3", "9.0.2", "9.0.1"
-        ];
-        
-        // Function to compare versions
-        function compareVersions(a, b) {
-            const pa = a.split('.').map(Number);
-            const pb = b.split('.').map(Number);
-            for (let i = 0; i < Math.max(pa.length, pb.length); i++) {
-                const na = pa[i] || 0, nb = pb[i] || 0;
-                if (na > nb) return 1;
-                if (na < nb) return -1;
-            }
-            return 0;
+    <!-- Custom -->
+    <div style="margin-top: 18px;">
+        <div class="card-label" style="margin-bottom: 10px;"><i class="fas fa-pen"></i> Custom Version</div>
+        <div class="custom-row">
+            <input class="custom-input" id="custom-input" type="text" placeholder="e.g. 12.3.1" autocomplete="off">
+            <button class="use-btn" id="use-custom-btn">USE THIS</button>
+        </div>
+        <p class="custom-hint">Format: Major.Minor.Patch — for versions not listed above</p>
+    </div>
+</div>
+
+<!-- DOWNLOAD BUTTON -->
+<button class="download-btn" id="dl-btn">
+    <i class="fas fa-download"></i> Generate Download Link
+</button>
+
+<!-- RESULT -->
+<div class="result-box" id="result-box">
+    <div class="result-label"><i class="fas fa-link"></i> Your download link</div>
+    <div class="result-name" id="result-name"></div>
+    <div class="result-link-wrap">
+        <i class="fas fa-file-zipper"></i>
+        <a class="result-link" id="result-link" target="_blank" rel="noopener">—</a>
+    </div>
+    <p class="result-note">
+        <i class="fas fa-circle-info"></i>
+        If the download doesn't start automatically, click the link above. The file is served directly from Ableton's CDN.
+    </p>
+</div>
+
+<!-- FOOTER -->
+<footer>
+    <a class="gh-link" href="https://github.com/devilAPI/StaticAbletonDownloader/" target="_blank" rel="noopener">
+        <i class="fab fa-github"></i> View on GitHub
+    </a>
+    <span>devilAPI &copy; 2025</span>
+</footer>
+```
+
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────────
+const versions = [
+    "12.4","12.3.8","12.3.7","12.3.6","12.3.5","12.3.2","12.3.1","12.3","12.2.7","12.2.6","12.2.5","12.2.2","12.2.1","12.2",
+    "12.1.11","12.1.10","12.1.9","12.1.8","12.1.7","12.1.6","12.1.5","12.1.4","12.1.3",
+    "12.1.2","12.1.1","12.1","12.0.25","12.0.20","12.0.12","12.0.11","12.0.10","12.0.9",
+    "12.0.8","12.0.7","12.0.6","12.0.5","12.0.4","12.0.3","12.0.2","12.0.1","12.0",
+    "11.3.42","11.3.35","11.3.30","11.3.20","11.3.13","11.3.12","11.3.11","11.3.10",
+    "11.3.4","11.3.3","11.3.2","11.2.11","11.2.10","11.2.7","11.2.6","11.2.5","11.2",
+    "11.1.5","11.1.1","11.1","11.0.12","11.0.11","11.0.10","11.0.6","11.0.5","11.0.2",
+    "11.0.1","11.0","10.1.30","10.1.25","10.1.18","10.1.17","10.1.15","10.1.14","10.1.13",
+    "10.1.9","10.1.7","10.1.6","10.1.5","10.1.4","10.1.3","10.1.2","10.1.1","10.1",
+    "10.0.6","10.0.5","10.0.4","10.0.3","10.0.2","10.0.1","10.0",
+    "9.7.7","9.7.6","9.7.5","9.7.4","9.7.3","9.7.2","9.7.1","9.7","9.6.2","9.6.1","9.6",
+    "9.5","9.2.3","9.2.2","9.2.1","9.2","9.1.10","9.1.9","9.1.8","9.1.7","9.1.6","9.1.5",
+    "9.1.4","9.1.3","9.1.2","9.1","9.0.6","9.0.5","9.0.4","9.0.3","9.0.2","9.0.1"
+];
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let selectedOS      = 'windows';
+let selectedEdition = 'suite';
+let selectedVersion = null; // null = use custom
+let customVersionConfirmed = false;
+
+// ── VERSION COMPARE ───────────────────────────────────────────────────────────
+function cmpVer(a, b) {
+    const pa = a.split('.').map(Number), pb = b.split('.').map(Number);
+    for (let i = 0; i < Math.max(pa.length, pb.length); i++) {
+        const d = (pa[i]||0) - (pb[i]||0);
+        if (d) return d;
+    }
+    return 0;
+}
+
+// Sort descending
+versions.sort((a,b) => {
+    const [amaj, amin=0, apatch=0] = a.split('.').map(Number);
+    const [bmaj, bmin=0, bpatch=0] = b.split('.').map(Number);
+    return bmaj - amaj || bmin - amin || bpatch - apatch;
+});
+
+// ── BUILD VERSION UI ──────────────────────────────────────────────────────────
+function buildVersionUI() {
+    const scroll = document.getElementById('version-scroll');
+    scroll.innerHTML = '';
+
+    const grouped = {};
+    versions.forEach(v => {
+        const maj = v.split('.')[0];
+        (grouped[maj] = grouped[maj] || []).push(v);
+    });
+
+    const majors = Object.keys(grouped).sort((a,b) => b-a);
+
+    majors.forEach(maj => {
+        const block = document.createElement('div');
+        block.className = 'major-block';
+
+        const title = document.createElement('div');
+        title.className = 'major-title';
+        title.setAttribute('data-v', maj + '.x');
+        title.textContent = 'Live ' + maj;
+        block.appendChild(title);
+
+        const grid = document.createElement('div');
+        grid.className = 'version-grid';
+
+        grouped[maj].forEach(v => {
+            const chip = document.createElement('div');
+            chip.className = 'version-chip';
+            chip.textContent = v;
+            chip.dataset.version = v;
+            chip.addEventListener('click', () => selectVersion(v, chip));
+            grid.appendChild(chip);
+        });
+
+        block.appendChild(grid);
+        scroll.appendChild(block);
+    });
+
+    // Auto-select first
+    const first = scroll.querySelector('.version-chip');
+    if (first) selectVersion(first.dataset.version, first);
+}
+
+function selectVersion(v, el) {
+    selectedVersion = v;
+    customVersionConfirmed = false;
+    document.getElementById('custom-input').value = '';
+    document.getElementById('custom-input').classList.remove('confirmed');
+    document.querySelectorAll('.version-chip').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+}
+
+// ── PILL GROUPS ───────────────────────────────────────────────────────────────
+document.getElementById('os-group').addEventListener('click', e => {
+    const pill = e.target.closest('.pill');
+    if (!pill) return;
+    selectedOS = pill.dataset.os;
+    document.querySelectorAll('#os-group .pill').forEach(p => p.classList.remove('active'));
+    pill.classList.add('active');
+});
+
+document.getElementById('edition-group').addEventListener('click', e => {
+    const pill = e.target.closest('.pill');
+    if (!pill) return;
+    selectedEdition = pill.dataset.edition;
+    document.querySelectorAll('#edition-group .pill').forEach(p => p.classList.remove('active'));
+    pill.classList.add('active');
+});
+
+// ── CUSTOM VERSION ────────────────────────────────────────────────────────────
+document.getElementById('use-custom-btn').addEventListener('click', () => {
+    const val = document.getElementById('custom-input').value.trim();
+    if (!val) { flashInput(); return; }
+    if (!/^\d+(\.\d+){0,2}$/.test(val)) { flashInput(); return; }
+    customVersionConfirmed = true;
+    selectedVersion = null;
+    document.querySelectorAll('.version-chip').forEach(c => c.classList.remove('selected'));
+    document.getElementById('custom-input').classList.add('confirmed');
+});
+
+function flashInput() {
+    const inp = document.getElementById('custom-input');
+    inp.style.borderColor = 'var(--accent)';
+    setTimeout(() => inp.style.borderColor = '', 600);
+}
+
+// ── DETECT OS ─────────────────────────────────────────────────────────────────
+function detectOS() {
+    const ua = navigator.userAgent;
+    const badge = document.getElementById('detect-badge');
+    let os = 'windows', name = 'Windows';
+
+    if (ua.includes('Macintosh')) {
+        if (ua.includes('M1') || ua.includes('M2') || ua.includes('M3') || navigator.platform?.includes('MacARM')) {
+            os = 'mac_arm'; name = 'Apple Silicon Mac';
+        } else {
+            os = 'mac_intel'; name = 'Intel Mac';
         }
-        
-        // Sort versions by major version (descending) then by minor/patch
-        versions.sort((a, b) => {
-            const aParts = a.split('.').map(Number);
-            const bParts = b.split('.').map(Number);
-            
-            // Compare major versions
-            if (aParts[0] !== bParts[0]) {
-                return bParts[0] - aParts[0];
-            }
-            
-            // Compare minor versions
-            if (aParts[1] !== bParts[1]) {
-                return (bParts[1] || 0) - (aParts[1] || 0);
-            }
-            
-            // Compare patch versions
-            return (bParts[2] || 0) - (aParts[2] || 0);
-        });
-        
-        // Auto-detect OS function
-        function detectOS() {
-            const userAgent = navigator.userAgent;
-            const osDetection = document.getElementById('os-detection');
-            let osValue = 'windows';
-            let osName = 'Windows';
-            
-            // Detect operating system
-            if (userAgent.includes('Macintosh')) {
-                // Check for Apple Silicon
-                if (userAgent.includes('Apple') && userAgent.includes('Mac OS X 11_') || 
-                    navigator.platform.includes('MacARM64') ||
-                    navigator.userAgent.includes('M1') ||
-                    navigator.userAgent.includes('M2') ||
-                    navigator.userAgent.includes('M3')) {
-                    osValue = 'mac_arm';
-                    osName = 'macOS (Apple Silicon)';
-                } else {
-                    osValue = 'mac_intel';
-                    osName = 'macOS (Intel)';
-                }
-            } else if (userAgent.includes('Win')) {
-                osValue = 'windows';
-                osName = 'Windows';
-            } else {
-                // Linux and other OS default to Windows
-                osValue = 'windows';
-                osName = 'Windows (Linux default)';
-            }
-            
-            // Update UI
-            document.getElementById('os-select').value = osValue;
-            osDetection.textContent = `Detected: ${osName}`;
-            osDetection.style.color = '#6bb1ff';
-            
-            return osValue;
+    }
+
+    selectedOS = os;
+    document.querySelectorAll('#os-group .pill').forEach(p => p.classList.remove('active'));
+    const target = document.querySelector(`#os-group .pill[data-os="${os}"]`);
+    if (target) target.classList.add('active');
+    badge.textContent = 'Detected: ' + name;
+}
+
+// ── BUILD URL ─────────────────────────────────────────────────────────────────
+function buildURL(os, edition, version) {
+    let url = `https://cdn-downloads.ableton.com/channels/${version}/ableton_live_${edition}_${version}`;
+    if (os.startsWith('mac')) {
+        if (cmpVer(version, '11.0.12') > 0) {
+            url += os === 'mac_intel' ? '_intel.dmg' : '_universal.dmg';
+        } else {
+            url += '_64.dmg';
         }
-        
-        // Group versions by major version
-        function groupVersionsByMajor(versions) {
-            const grouped = {};
-            
-            versions.forEach(version => {
-                const major = version.split('.')[0];
-                if (!grouped[major]) {
-                    grouped[major] = [];
-                }
-                grouped[major].push(version);
-            });
-            
-            return grouped;
-        }
-        
-        // Populate the version sections
-        const versionSections = document.getElementById('version-sections');
-        const groupedVersions = groupVersionsByMajor(versions);
-        
-        // Sort major versions descending
-        const majorVersions = Object.keys(groupedVersions).sort((a, b) => b - a);
-        
-        majorVersions.forEach(major => {
-            const section = document.createElement('div');
-            section.className = 'version-section';
-            
-            const header = document.createElement('div');
-            header.className = 'section-header';
-            header.textContent = `Version ${major}.x`;
-            
-            const content = document.createElement('div');
-            content.className = 'section-content';
-            
-            const grid = document.createElement('div');
-            grid.className = 'version-grid';
-            
-            groupedVersions[major].forEach(version => {
-                const versionItem = document.createElement('div');
-                versionItem.className = 'version-item';
-                versionItem.textContent = version;
-                versionItem.dataset.version = version;
-                
-                versionItem.addEventListener('click', () => {
-                    // Remove selected class from all items
-                    document.querySelectorAll('.version-item').forEach(item => {
-                        item.classList.remove('selected');
-                    });
-                    // Add selected class to clicked item
-                    versionItem.classList.add('selected');
-                    
-                    // Clear custom version input
-                    document.getElementById('custom-version-input').value = '';
-                });
-                
-                grid.appendChild(versionItem);
-            });
-            
-            content.appendChild(grid);
-            section.appendChild(header);
-            section.appendChild(content);
-            versionSections.appendChild(section);
-        });
-        
-        // Custom version button event listener
-        document.getElementById('custom-version-btn').addEventListener('click', function() {
-            const customVersion = document.getElementById('custom-version-input').value.trim();
-            
-            if (!customVersion) {
-                alert("Please enter a version number");
-                return;
-            }
-            
-            // Validate version format (basic check)
-            const versionPattern = /^\d+(\.\d+){0,2}$/;
-            if (!versionPattern.test(customVersion)) {
-                alert("Please enter a valid version number (e.g., 12.3.1)");
-                return;
-            }
-            
-            // Remove selected class from all version items
-            document.querySelectorAll('.version-item').forEach(item => {
-                item.classList.remove('selected');
-            });
-            
-            // Show custom version as selected
-            document.getElementById('custom-version-input').style.borderColor = '#6bb1ff';
-            document.getElementById('custom-version-input').style.boxShadow = '0 0 0 3px rgba(107, 177, 255, 0.3)';
-        });
-        
-        // Download button event listener
-        document.getElementById('download-btn').addEventListener('click', function() {
-            const os = document.getElementById('os-select').value;
-            const edition = document.getElementById('edition-select').value;
-            
-            // Check if a version is selected or custom version is entered
-            const selectedVersion = document.querySelector('.version-item.selected');
-            const customVersion = document.getElementById('custom-version-input').value.trim();
-            
-            let version;
-            
-            if (selectedVersion) {
-                version = selectedVersion.dataset.version;
-            } else if (customVersion) {
-                version = customVersion;
-            } else {
-                alert("Please select a version or enter a custom version");
-                return;
-            }
-            
-            let url = "https://cdn-downloads.ableton.com/channels/";
-            
-            url += `${version}/ableton_live_${edition}_${version}`;
-            
-            if (os.startsWith("mac")) {
-                if (compareVersions(version, "11.0.12") > 0) {
-                    url += os === "mac_intel" ? "_intel.dmg" : "_universal.dmg";
-                } else {
-                    url += "_64.dmg";
-                }
-            } else {
-                url += "_64.zip";
-            }
-            
-            // Show the download link
-            const downloadLink = document.getElementById('download-link');
-            const directLink = document.getElementById('direct-download-link');
-            directLink.href = url;
-            directLink.textContent = `Download Ableton Live ${edition.charAt(0).toUpperCase() + edition.slice(1)} ${version}`;
-            downloadLink.style.display = 'block';
-            
-            // Scroll to the download link
-            downloadLink.scrollIntoView({ behavior: 'smooth' });
-        });
-        
-        // Auto-select the first version
-        document.querySelector('.version-item').classList.add('selected');
-        
-        // Detect OS on page load
-        detectOS();
-    </script>
+    } else {
+        url += '_64.zip';
+    }
+    return url;
+}
+
+// ── DOWNLOAD BUTTON ───────────────────────────────────────────────────────────
+document.getElementById('dl-btn').addEventListener('click', () => {
+    let version;
+
+    if (customVersionConfirmed) {
+        version = document.getElementById('custom-input').value.trim();
+    } else if (selectedVersion) {
+        version = selectedVersion;
+    } else {
+        flashInput();
+        return;
+    }
+
+    const url = buildURL(selectedOS, selectedEdition, version);
+    const editionDisplay = selectedEdition.charAt(0).toUpperCase() + selectedEdition.slice(1);
+
+    const resultBox  = document.getElementById('result-box');
+    const resultName = document.getElementById('result-name');
+    const resultLink = document.getElementById('result-link');
+
+    resultName.textContent = `Ableton Live ${editionDisplay} ${version}`;
+    resultLink.href = url;
+    resultLink.textContent = url;
+    resultBox.classList.add('visible');
+    resultBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    // open in new tab
+    window.open(url, '_blank', 'noopener');
+});
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+buildVersionUI();
+detectOS();
+</script>
+
 </body>
 </html>
